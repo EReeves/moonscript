@@ -3,27 +3,28 @@
 local alt_getopt = require "alt_getopt"
 local lfs = require "lfs"
 
-local opts, ind = alt_getopt.get_opts(arg, "lvhwt:o:pTXb", {
-	print = "p", tree = "T", version = "v", help = "h", lint = "l"
+local opts, ind = alt_getopt.get_opts(arg, "lvhwte:o:pTXb", {
+	print = "p", tree = "T", version = "v", help = "h", lint = "l", extension = 'e'
 })
 
 local read_stdin = arg[1] == "--"
 
 local help = [[Usage: %s [options] files...
 
-    -h          Print this message
-    -w          Watch file/directory
-    -t path     Specify where to place compiled files
-    -o file     Write output to file
-    -p          Write output to standard out
-    -T          Write parse tree instead of code (to stdout)
-    -X          Write line rewrite map instead of code (to stdout)
-    -l          Perform lint on the file instead of compiling
-    -b          Dump parse and compile time (doesn't write output)
-    -v          Print version
+    -h          	Print this message
+    -w          	Watch file/directory
+    -t path     	Specify where to place compiled files
+    -o file     	Write output to file
+    -e extension	Write file with specified extension
+    -p         	 	Write output to standard out
+    -T          	Write parse tree instead of code (to stdout)
+    -X          	Write line rewrite map instead of code (to stdout)
+    -l          	Perform lint on the file instead of compiling
+    -b          	Dump parse and compile time (doesn't write output)
+    -v          	Print version
 
-    --          Read from standard in, print to standard out
-                (Must be first and only argument)
+    --         		Read from standard in, print to standard out
+                	(Must be first and only argument)
 ]]
 
 if opts.v then
@@ -198,6 +199,11 @@ if opts.w then
 
 		if opts.o then
 			target = opts.o
+		end
+
+		if opts.e then
+			target = target:gsub("%.lua$", "'.' .. opts.e")
+			print("Hello")
 		end
 
 		local success, err = handle_file(fname, target)
